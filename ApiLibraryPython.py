@@ -45,3 +45,24 @@ class ApiLibraryPython:
             "status": int(response.status_code),
             "body": response.json()
         }
+    
+    def add_bearer(self, ue_id, bearer_id):
+        """Add a bearer to an attached UE"""
+        url = f"{self.base_url}/ues/{ue_id}/bearers"
+        
+        # Zgodnie z Twoim screenem, request body to: {"bearer_id": 0}
+        payload = {
+            "bearer_id": int(bearer_id)
+        }
+        
+        response = requests.post(url, json=payload)
+
+        try:
+            body = response.json()
+        except ValueError:
+            body = response.text
+
+        return {
+            "status": int(response.status_code),
+            "body": body
+        }
