@@ -68,15 +68,16 @@ class ApiLibraryPython:
         }
     
     def start_data_transfer(self, ue_id, bearer_id, speed):
-        """POST /ues/{ue_id}/bearers/{bearer_id}/transfer/start"""
-        url = f"{self.base_url}/ues/{ue_id}/bearers/{bearer_id}/transfer/start"
-        payload = {"speed": int(speed)}
+        """ZMIANA: Ścieżka kończy się na /traffic zamiast /transfer/start"""
+        url = f"{self.base_url}/ues/{ue_id}/bearers/{bearer_id}/traffic"
+        # OAS 3.1 wymaga pola 'Mbps' lub 'kbps' zamiast 'speed'
+        payload = {"protocol": "udp", "Mbps": int(speed), "kbps": 0, "bps": 0}
         response = requests.post(url, json=payload)
         return {"status": int(response.status_code), "body": response.json()}
     
     def get_data_transfer(self, ue_id, bearer_id):
-        """GET /ues/{ue_id}/bearers/{bearer_id}/transfer"""
-        url = f"{self.base_url}/ues/{ue_id}/bearers/{bearer_id}/transfer"
+        """ZMIANA: Ścieżka to /traffic zamiast /transfer"""
+        url = f"{self.base_url}/ues/{ue_id}/bearers/{bearer_id}/traffic"
         response = requests.get(url)
         return {"status": int(response.status_code), "body": response.json()}
     
@@ -88,3 +89,35 @@ class ApiLibraryPython:
             url = f"{self.base_url}/ues/{ue_id}/transfer/stop"
         response = requests.post(url)
         return {"status": int(response.status_code), "body": response.json() if response.text else {}}
+
+    # --- NOWE FUNKCJE ZGODNE Z OAS 3.1 ---
+
+    def start_traffic(self, ue_id, bearer_id, mbps=0, kbps=0):
+        """POST /ues/{ue_id}/bearers/{bearer_id}/traffic"""
+        url = f"{self.base_url}/ues/{ue_id}/bearers/{bearer_id}/traffic"
+        payload = {
+            "protocol": "udp",
+            "Mbps": int(mbps),
+            "kbps": int(kbps),
+            "bps": 0
+        }
+        response = requests.post(url, json=payload)
+        return {"status": int(response.status_code), "body": response.json()}
+
+    def get_traffic_stats(self, ue_id, bearer_id):
+        """GET /ues/{ue_id}/bearers/{bearer_id}/traffic"""
+        url = f"{self.base_url}/ues/{ue_id}/bearers/{bearer_id}/traffic"
+        response = requests.get(url)
+        return {"status": int(response.status_code), "body": response.json()}
+
+    def stop_traffic(self, ue_id, bearer_id):
+        """DELETE /ues/{ue_id}/bearers/{bearer_id}/traffic"""
+        url = f"{self.base_url}/ues/{ue_id}/bearers/{bearer_id}/traffic"
+        response = requests.delete(url)
+        return {"status": int(response.status_code), "body": response.json()}
+
+    def detach_ue(self, ue_id):
+        """DELETE /ues/{ue_id}"""
+        url = f"{self.base_url}/ues/{ue_id}"
+        response = requests.delete(url)
+        return {"status": int(response.status_code), "body": response.json()}
