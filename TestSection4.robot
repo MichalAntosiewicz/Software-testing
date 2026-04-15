@@ -14,7 +14,6 @@ Scenario: Start Transfer – Speed Over Limit
     [Documentation]    Weryfikacja odrzucenia transferu powyżej 100 Mbps.
     Reset App State
     Attach Ue    10
-    # Oczekujemy 422 dla błędnego zakresu (110 Mbps)
     Start Traffic on UE 10 Bearer 9 with 110 Mbps and expect error 422
     [Teardown]    Reset App State
 
@@ -23,7 +22,6 @@ Scenario: Start Transfer – Bearer Not Active
     [Documentation]    Próba uruchomienia ruchu na nieistniejącym bearerze[cite: 773].
     Reset App State
     Attach Ue    10
-    # Oczekujemy 422, ponieważ Bearer 2 nie został dodany
     Start Traffic on UE 10 Bearer 2 with 50 Mbps and expect error 422
     [Teardown]    Reset App State
 
@@ -32,9 +30,7 @@ Scenario: Check Transfer (Default Units)
     [Documentation]    Weryfikacja statystyk w jednostkach kbps[cite: 778].
     Reset App State
     Attach Ue    10
-    # Uruchomienie transferu (Prekondycja dla sprawdzenia statystyk)
     Start Traffic on UE 10 Bearer 9 with 1000 kbps and expect success
-    # Sprawdzenie czy tx_bps wynosi 1 000 000 (1000 kbps)
     Verify Traffic on UE 10 Bearer 9 matches 1000 kbps
     [Teardown]    Reset App State
 
@@ -44,7 +40,6 @@ Scenario: Stop Data Transfer (Total for UE)
     Reset App State
     Attach Ue    10
     Start Traffic on UE 10 Bearer 9 with 1 Mbps and expect success
-    # Wywołanie Twojej funkcji stop_data_transfer bez podawania bearer_id
     Stop all transfers for UE 10 and expect success
     [Teardown]    Reset App State
 
@@ -54,7 +49,6 @@ Scenario: Simulator Reset
     Reset App State
     Attach Ue    1
     Attach Ue    2
-    # Resetowanie stanu aplikacji [cite: 803-804]
     Reset App State
     Verify UE 1 is not in system
     Verify UE 2 is not in system
@@ -77,12 +71,10 @@ Start Traffic on UE ${ue_id} Bearer ${bearer_id} with ${val} kbps and expect suc
 Verify Traffic on UE ${ue_id} Bearer ${bearer_id} matches ${expected_kbps} kbps
     ${answer}=    Get Traffic Stats    ${ue_id}    ${bearer_id}
     Should Be Equal As Integers    ${answer['status']}    ${STATUS_OK}
-    # Przeliczenie kbps na bps: 1000 * 1000 = 1 000 000 bps
     ${expected_bps}=    Evaluate    ${expected_kbps} * 1000
     Should Be Equal As Integers    ${answer['body']['tx_bps']}    ${expected_bps}
 
 Stop all transfers for UE ${ue_id} and expect success
-    # Wywołanie Twojej funkcji stop_data_transfer bez bearer_id [cite: 313-315]
     ${answer}=    Stop Data Transfer    ${ue_id}
     Should Be Equal As Integers    ${answer['status']}    ${STATUS_OK}
 
