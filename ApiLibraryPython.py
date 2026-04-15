@@ -121,3 +121,21 @@ class ApiLibraryPython:
         url = f"{self.base_url}/ues/{ue_id}"
         response = requests.delete(url)
         return {"status": int(response.status_code), "body": response.json()}
+    
+
+    def remove_bearer(self, ue_id, bearer_id):
+        """Obsługuje: DELETE /ues/{ue_id}/bearers/{bearer_id}"""
+        url = f"{self.base_url}/ues/{ue_id}/bearers/{bearer_id}"
+        response = requests.delete(url)
+        return {"status": int(response.status_code), "body": response.json()}
+
+    def start_traffic(self, ue_id, bearer_id, mbps_value, protocol="udp"):
+        """Obsługuje: POST /ues/{ue_id}/bearers/{bearer_id}/traffic"""
+        url = f"{self.base_url}/ues/{ue_id}/bearers/{bearer_id}/traffic"
+   
+        payload = {
+            "protocol": str(protocol),
+            "Mbps": int(mbps_value)
+        }
+        response = requests.post(url, json=payload)
+        return {"status": int(response.status_code), "body": response.json()}
