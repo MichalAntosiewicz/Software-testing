@@ -50,7 +50,6 @@ class ApiLibraryPython:
         """Add a bearer to an attached UE"""
         url = f"{self.base_url}/ues/{ue_id}/bearers"
         
-        # Zgodnie z Twoim screenem, request body to: {"bearer_id": 0}
         payload = {
             "bearer_id": int(bearer_id)
         }
