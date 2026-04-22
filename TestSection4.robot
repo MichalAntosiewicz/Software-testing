@@ -19,7 +19,7 @@ Scenario: Start Transfer – Speed Over Limit
 
 Scenario: Start Transfer – Bearer Not Active
     [Tags]    TC-17    Negative
-    [Documentation]    Próba uruchomienia ruchu na nieistniejącym bearerze[cite: 773].
+    [Documentation]    Próba uruchomienia ruchu na nieistniejącym bearerze.
     Reset App State
     Attach Ue    10
     Start Traffic on UE 10 Bearer 2 with 50 Mbps and expect error 422
@@ -27,7 +27,7 @@ Scenario: Start Transfer – Bearer Not Active
 
 Scenario: Check Transfer (Default Units)
     [Tags]    TC-18    Positive
-    [Documentation]    Weryfikacja statystyk w jednostkach kbps[cite: 778].
+    [Documentation]    Weryfikacja statystyk w jednostkach kbps.
     Reset App State
     Attach Ue    10
     Start Traffic on UE 10 Bearer 9 with 1000 kbps and expect success
@@ -36,7 +36,7 @@ Scenario: Check Transfer (Default Units)
 
 Scenario: Stop Data Transfer (Total for UE)
     [Tags]    TC-19    Positive
-    [Documentation]    Zatrzymanie ruchu dla UE [cite: 783].
+    [Documentation]    Zatrzymanie ruchu dla UE.
     Reset App State
     Attach Ue    10
     Start Traffic on UE 10 Bearer 9 with 1 Mbps and expect success
@@ -45,7 +45,7 @@ Scenario: Stop Data Transfer (Total for UE)
 
 Scenario: Simulator Reset
     [Tags]    TC-20    Positive
-    [Documentation]    Weryfikacja powrotu symulatora do stanu początkowego[cite: 804].
+    [Documentation]    Weryfikacja powrotu symulatora do stanu początkowego.
     Reset App State
     Attach Ue    1
     Attach Ue    2
