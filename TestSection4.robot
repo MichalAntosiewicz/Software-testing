@@ -1,5 +1,5 @@
 *** Settings ***
-Documentation     Scenariusze testowe 16-20 zgodne ze specyfikacją OAS 3.1 i Twoją listą.
+Documentation     Scenariusze testowe 16-20 zgodne ze specyfikacją OAS 3.1.
 Library           ApiLibraryPython.py    http://127.0.0.1:8000
 Library           Collections
 
@@ -36,7 +36,7 @@ Scenario: Check Transfer (Default Units)
 
 Scenario: Stop Data Transfer (Total for UE)
     [Tags]    TC-19    Positive
-    [Documentation]    Zatrzymanie ruchu dla UE (zgodnie z Twoją funkcją stop_data_transfer)[cite: 783].
+    [Documentation]    Zatrzymanie ruchu dla UE [cite: 783].
     Reset App State
     Attach Ue    10
     Start Traffic on UE 10 Bearer 9 with 1 Mbps and expect success

@@ -1,25 +1,21 @@
 import requests
 
 class ApiLibraryPython:
-    ROBOT_LIBRARY_SCOPE = 'SUITE' #one instance for .robot file (Test Suite)
+    ROBOT_LIBRARY_SCOPE = 'SUITE'
 
     def __init__ (self, base_url):
         self.base_url = base_url
 
     def attach_ue(self, ue_id):
         """Attaches UE to web"""
-        # Connect with endpoint
         url = f"{self.base_url}/ues"
 
-        # API payload
         payload = {
             "ue_id": ue_id
         }
         
-        # POST /ues
         response = requests.post(url, json=payload)
 
-        # Return response json
         return {
             "status": int(response.status_code),
             "body": response.json()
@@ -28,19 +24,15 @@ class ApiLibraryPython:
     def reset_app_state(self):
         """Reset app state using endpoint: POST /reset"""
         url = f"{self.base_url}/reset"
-        # POST
         response = requests.post(url)
 
-        # Return status code
         return response.status_code
     
     def get_ue(self, ue_id):
         """Get connected UE additional info"""
         url = f"{self.base_url}/ues/{ue_id}"
-        # GET
         response = requests.get(url)
 
-        # Return response json
         return{
             "status": int(response.status_code),
             "body": response.json()
@@ -69,7 +61,6 @@ class ApiLibraryPython:
     def start_data_transfer(self, ue_id, bearer_id, speed):
         """ZMIANA: Ścieżka kończy się na /traffic zamiast /transfer/start"""
         url = f"{self.base_url}/ues/{ue_id}/bearers/{bearer_id}/traffic"
-        # OAS 3.1 wymaga pola 'Mbps' lub 'kbps' zamiast 'speed'
         payload = {"protocol": "udp", "Mbps": int(speed), "kbps": 0, "bps": 0}
         response = requests.post(url, json=payload)
         return {"status": int(response.status_code), "body": response.json()}
@@ -89,7 +80,6 @@ class ApiLibraryPython:
         response = requests.post(url)
         return {"status": int(response.status_code), "body": response.json() if response.text else {}}
 
-    # --- NOWE FUNKCJE ZGODNE Z OAS 3.1 ---
 
     def start_traffic(self, ue_id, bearer_id, mbps=0, kbps=0):
         """POST /ues/{ue_id}/bearers/{bearer_id}/traffic"""

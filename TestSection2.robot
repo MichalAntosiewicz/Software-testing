@@ -1,5 +1,5 @@
 *** Settings ***
-Library    ApiLibraryPython.py    http://127.0.0.1:7777
+Library    ApiLibraryPython.py    http://127.0.0.1:8000
 Library    Collections
 
 *** Variables ***
