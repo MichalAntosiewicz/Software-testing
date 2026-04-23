@@ -1,0 +1,4 @@
+Kacper:
+[X] 1 App should attach UE 0 but returns error
+[X] 2 App should not allow transfer over 100Mb but it does
+[X] 3 App should not allow transfer below 0 but it does
