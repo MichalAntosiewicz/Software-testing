@@ -19,14 +19,14 @@ TC-21 User Should Not Be Able To Start Traffic Out Of Upper Allowed Speed Range
     Start Traffic on UE 1 Bearer 9 with 110 Mbps and expect error ${STATUS_BAD_REQUEST}
 
 TC-22 User Should Not Be Able To Start Traffic Out Of Lower Allowed Speed Range
-    [Tags]    TC-21    Section-5    Negative
+    [Tags]    TC-22    Section-5    Negative
     [Documentation]    Check whether system rejects traffic connection correctly with speed out of correct lower range\n\n
     ...                Expected: System should reject connection with code: ${STATUS_BAD_REQUEST} 
     Attach UE with ID 1 and expect success status ${STATUS_OK}   
     Start Traffic on UE 1 Bearer 9 with -100 Mbps and expect error ${STATUS_BAD_REQUEST}    
 
 TC-23 User Should Be Able To Restart Traffic On Restarted Bearer
-    [Tags]    TC-21    Section-5    Positive
+    [Tags]    TC-23    Section-5    Positive
     [Documentation]    Check whether system correctly allow user to attach UE, add bearer, start traffic 
     ...                then detach same UE and then add same ID bearer and start traffic \n\n
     ...                Expected: System should accept connection with code: ${STATUS_OK} 
