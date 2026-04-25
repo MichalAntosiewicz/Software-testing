@@ -118,7 +118,7 @@ class ApiLibraryPython:
         response = requests.delete(url)
         return {"status": int(response.status_code), "body": response.json()}
 
-    def start_traffic(self, ue_id, bearer_id, mbps_value, protocol="udp"):
+    def start_traffic_1(self, ue_id, bearer_id, mbps_value, protocol="udp"):
         """Obsługuje: POST /ues/{ue_id}/bearers/{bearer_id}/traffic"""
         url = f"{self.base_url}/ues/{ue_id}/bearers/{bearer_id}/traffic"
    
@@ -128,3 +128,4 @@ class ApiLibraryPython:
         }
         response = requests.post(url, json=payload)
         return {"status": int(response.status_code), "body": response.json()}
+    

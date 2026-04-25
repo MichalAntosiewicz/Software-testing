@@ -76,6 +76,6 @@ Remove bearer ${bearer_id} from UE ${ue_id} and expect error
 
 Start 50 Mbps traffic on bearer ${bearer_id} for UE ${ue_id} and expect success
     [Documentation]    Starts DL traffic and verifies 'traffic_started' [cite: 227, 235]
-    ${res}=    Start Traffic    ${ue_id}    ${bearer_id}    50
+    ${res}=    Start Traffic 1    ${ue_id}    ${bearer_id}    50
     Should Be Equal As Integers    ${res['status']}    ${STATUS_OK}
     Should Be Equal As Strings     ${res['body']['status']}    traffic_started

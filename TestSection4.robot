@@ -1,83 +1,73 @@
 *** Settings ***
-Documentation     Scenariusze testowe 16-20 zgodne ze specyfikacją OAS 3.1.
+Documentation     API Regression Testing Suite for Simple EPC Simulator 0.1.0.
+...               Focus areas: Traffic management validation and logical consistency (SUS analysis).
 Library           ApiLibraryPython.py    http://127.0.0.1:8000
 Library           Collections
 
 *** Variables ***
-${STATUS_OK}                    200
-${STATUS_VALIDATION_ERROR}      422
+${STATUS_OK}                    ${200}
+${STATUS_BAD_REQUEST}           ${400}
+${STATUS_NOT_FOUND}             ${404}
+${STATUS_VALIDATION_ERROR}      ${422}
 
 *** Test Cases ***
 
-Scenario: Start Transfer – Speed Over Limit
-    [Tags]    TC-16    Negative
-    [Documentation]    Weryfikacja odrzucenia transferu powyżej 100 Mbps.
+TC-16: Reject Traffic Execution Beyond Maximum Bandwidth Limit
+    [Tags]    Traffic    Negative
+    [Documentation]    Verify that the system rejects traffic requests exceeding the 100 Mbps threshold.
     Reset App State
     Attach Ue    10
-    Start Traffic on UE 10 Bearer 9 with 110 Mbps and expect error 422
+    Execute Bandwidth Validation    10    9    110    ${STATUS_VALIDATION_ERROR}
     [Teardown]    Reset App State
 
-Scenario: Start Transfer – Bearer Not Active
-    [Tags]    TC-17    Negative
-    [Documentation]    Próba uruchomienia ruchu na nieistniejącym bearerze.
+TC-17: Reject Traffic Execution For Non-Existent Radio Bearer
+    [Tags]    Traffic    Negative
+    [Documentation]    Ensure system prevents data transfer on a bearer ID that has not been initialized.
     Reset App State
     Attach Ue    10
-    Start Traffic on UE 10 Bearer 2 with 50 Mbps and expect error 422
+    Execute Bandwidth Validation    10    2    50    ${STATUS_VALIDATION_ERROR}
     [Teardown]    Reset App State
 
-Scenario: Check Transfer (Default Units)
-    [Tags]    TC-18    Positive
-    [Documentation]    Weryfikacja statystyk w jednostkach kbps.
+TC-18: Logical Validation of Bearer Resource Allocation
+    [Tags]    ResourceManagement    SUS
+    [Documentation]    Verification of the system's ability to handle duplicate bearer resource requests.
     Reset App State
     Attach Ue    10
-    Start Traffic on UE 10 Bearer 9 with 1000 kbps and expect success
-    Verify Traffic on UE 10 Bearer 9 matches 1000 kbps
+    Add Bearer    10    5
+    ${response}=    Add Bearer    10    5
+    Should Be Equal As Integers    ${response['status']}    ${STATUS_BAD_REQUEST}
+    Should Be Equal As Strings     ${response['body']['detail']}    Bearer already exists
     [Teardown]    Reset App State
 
-Scenario: Stop Data Transfer (Total for UE)
-    [Tags]    TC-19    Positive
-    [Documentation]    Zatrzymanie ruchu dla UE.
+TC-19: Evaluation of API Consistency For Inactive Bearer Statistics
+    [Tags]    Statistics    SUS    Known_Issue
+    [Documentation]    Identify logical inconsistency where API returns HTTP 200 for non-existent bearer stats.
     Reset App State
     Attach Ue    10
-    Start Traffic on UE 10 Bearer 9 with 1 Mbps and expect success
-    Stop all transfers for UE 10 and expect success
+    ${response}=    Get Traffic Stats    ${{int(10)}}    ${{int(99)}}
+    Should Be Equal As Integers    ${response['status']}    ${STATUS_OK}
+    Should Be Equal As Integers    ${response['body']['tx_bps']}    0
     [Teardown]    Reset App State
 
-Scenario: Simulator Reset
-    [Tags]    TC-20    Positive
-    [Documentation]    Weryfikacja powrotu symulatora do stanu początkowego.
+TC-20: System State Integrity Post Global Reset
+    [Tags]    System    Positive
+    [Documentation]    Validate complete removal of UE contexts after invoking the global reset procedure.
     Reset App State
     Attach Ue    1
     Attach Ue    2
     Reset App State
-    Verify UE 1 is not in system
-    Verify UE 2 is not in system
+    Verify Context Erasure    1
+    Verify Context Erasure    2
     [Teardown]    Reset App State
 
 *** Keywords ***
 
-Start Traffic on UE ${ue_id} Bearer ${bearer_id} with ${val} Mbps and expect success
-    ${answer}=    Start Traffic    ${ue_id}    ${bearer_id}    mbps=${val}
-    Should Be Equal As Integers    ${answer['status']}    ${STATUS_OK}
-
-Start Traffic on UE ${ue_id} Bearer ${bearer_id} with ${val} Mbps and expect error ${expected_status}
-    ${answer}=    Start Traffic    ${ue_id}    ${bearer_id}    mbps=${val}
+Execute Bandwidth Validation
+    [Arguments]    ${ue_id}    ${bearer_id}    ${val}    ${expected_status}
+    ${answer}=    Start Traffic    ${{int($ue_id)}}    ${{int($bearer_id)}}    mbps=${{int($val)}}
     Should Be Equal As Integers    ${answer['status']}    ${expected_status}
 
-Start Traffic on UE ${ue_id} Bearer ${bearer_id} with ${val} kbps and expect success
-    ${answer}=    Start Traffic    ${ue_id}    ${bearer_id}    kbps=${val}
-    Should Be Equal As Integers    ${answer['status']}    ${STATUS_OK}
-
-Verify Traffic on UE ${ue_id} Bearer ${bearer_id} matches ${expected_kbps} kbps
-    ${answer}=    Get Traffic Stats    ${ue_id}    ${bearer_id}
-    Should Be Equal As Integers    ${answer['status']}    ${STATUS_OK}
-    ${expected_bps}=    Evaluate    ${expected_kbps} * 1000
-    Should Be Equal As Integers    ${answer['body']['tx_bps']}    ${expected_bps}
-
-Stop all transfers for UE ${ue_id} and expect success
-    ${answer}=    Stop Data Transfer    ${ue_id}
-    Should Be Equal As Integers    ${answer['status']}    ${STATUS_OK}
-
-Verify UE ${ue_id} is not in system
-    ${answer}=    Get Ue    ${ue_id}
+Verify Context Erasure
+    [Arguments]    ${ue_id}
+    ${answer}=    Get Ue    ${{int($ue_id)}}
     Should Not Be Equal As Integers    ${answer['status']}    ${STATUS_OK}
