@@ -128,3 +128,27 @@ class ApiLibraryPython:
         }
         response = requests.post(url, json=payload)
         return {"status": int(response.status_code), "body": response.json()}
+
+    def stop_all_traffic(self, ue_id):
+        """Obsługuje usunięcie całego ruchu dla UE: DELETE /ues/{ue_id}/traffic"""
+        url = f"{self.base_url}/ues/{ue_id}/traffic"
+        response = requests.delete(url)
+        try:
+            body = response.json()
+        except ValueError:
+            body = response.text
+            
+        return {"status": int(response.status_code), "body": body}
+
+    def get_ues_stats(self, ue_id):
+        """Obsługuje statystyki: GET /ues/stats"""
+        url = f"{self.base_url}/ues/stats"
+        payload = {"ue_id": int(ue_id)}
+        response = requests.get(url, params=payload)
+        
+        try:
+            body = response.json()
+        except ValueError:
+            body = response.text
+            
+        return {"status": int(response.status_code), "body": body}

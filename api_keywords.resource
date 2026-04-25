@@ -75,3 +75,15 @@ Check if traffic on UE ${ue_id} Bearer ${bearer_id} is stopped
     Run Keyword And Continue On Failure    Should Be Equal As Strings    ${answer['body']['protocol']}    None
     Run Keyword And Continue On Failure    Should Be Equal As Strings    ${answer['body']['target_bps']}  None
 
+Check Default Traffic Stats Unit For UE ${ue_id}
+    [Documentation]    Checks if default stats use kbps instead of bps
+    ${answer}=    Get Ues Stats    ${ue_id}
+    Run Keyword And Continue On Failure    Should Be Equal As Integers    ${answer['status']}    ${STATUS_OK}
+    
+    Dictionary Should Contain Key    ${answer['body']}    total_tx_kbps    msg=App should use kbps as default unit for stats but it uses bps!
+    Dictionary Should Contain Key    ${answer['body']}    total_rx_kbps    msg=App should use kbps as default unit for stats but it uses bps!
+
+Stop All Traffic On UE ${ue_id} and expect success ${expected_status}
+    [Documentation]    Tries to stop all traffic for UE without specifying bearer_id
+    ${answer}=    Stop All Traffic    ${ue_id}
+    Should Be Equal As Integers    ${answer['status']}    ${expected_status}    msg=App should allow stopping traffic for all bearers but endpoint failed!
