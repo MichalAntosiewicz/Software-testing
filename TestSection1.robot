@@ -18,13 +18,17 @@ TC-01: User Should Be Able To Attach Devices Within Allowed ID Range
     [Tags]    TC-01    Section-1    Positive
     [Documentation]    Check whether system attaches device correctly with ID in correct range
     ...                Expected: System should connect device with code: ${STATUS_OK} 
-    Attach UE with ID 50 and expect success status ${STATUS_OK}
+    Run Keyword And Continue On Failure    Attach UE with ID 0 and expect success status ${STATUS_OK}    
+    Run Keyword And Continue On Failure    Attach UE with ID 10 and expect success status ${STATUS_OK}  
+    Run Keyword And Continue On Failure    Attach UE with ID 50 and expect success status ${STATUS_OK}  
+    Run Keyword And Continue On Failure    Attach UE with ID 100 and expect success status ${STATUS_OK}  
 
 TC-02: System Should Reject Connection When Device ID Is Out Of Upper Boundary Range  
     [Tags]    TC-02    Section-1    Negative
     [Documentation]    Check whether system rejects device connection correctly with ID out of upper boundary range
     ...                Expected: System should reject device connection with code: ${STATUS_VALIDATION_ERROR}
     Attach UE with ID 101 and expect error status ${STATUS_VALIDATION_ERROR} 
+    Attach UE with ID -1 and expect error status ${STATUS_VALIDATION_ERROR} 
 
 TC-03: System Should Reject Connection When Device ID Is Out Of Lower Boundary Range  
     [Tags]    TC-03    Section-1    Negative

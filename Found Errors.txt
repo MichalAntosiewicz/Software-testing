@@ -1,0 +1,9 @@
+Kacper:
+[X] 1 App should attach UE 0 but returns error
+[X] 2 App should not allow transfer over 100Mb but it does
+[X] 3 App should not allow transfer below 0 but it does
+[X] 4 App should allow user to restart traffic on restarted UE but it returns error, however traffic starts
+
+Piotrek:
+[X] 5 App should allow user to stop traffic for all bearers at once but it requires bearer ID
+[X] 6 App should use kbps as default unit for stats but it uses bps:
