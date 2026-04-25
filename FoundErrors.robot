@@ -10,6 +10,17 @@ TC-01: User Should Be Able To Attach Devices Within Allowed ID Range
     ...                Expected: System should connect device with code: ${STATUS_OK} 
     Attach UE with ID 0 and expect success status ${STATUS_OK}   
 
+TC-19: Evaluation of API Consistency For Inactive Bearer Statistics
+    [Tags]    Compliance    Defect_Tracking    Negative
+    [Documentation]    Identify logical inconsistency where API incorrectly returns HTTP 200 for non-existent resources. 
+    ...               Expected result: 404 Not Found.
+    Reset App State
+    Attach UE context    10    ${STATUS_OK}
+    ${response}=    Get Traffic Stats    ${{int(10)}}    ${{int(99)}}
+    # Triggering intentional FAIL to document API discrepancy (Returns 200 instead of 404)
+    Should Be Equal As Integers    ${response['status']}    ${STATUS_NOT_FOUND}
+    [Teardown]    Reset App State
+
 # new tests
 TC-21 User Should Not Be Able To Start Traffic Out Of Upper Allowed Speed Range
     [Tags]    TC-21    Section-5    Negative
@@ -47,5 +58,3 @@ TC-23 User Should Be Able To Restart Traffic On Restarted Bearer
     Sleep    1s
     # app returns error but traffic starts
     Check if traffic on UE 1 Bearer 1 is stopped
-
-    

@@ -7,3 +7,6 @@ Kacper:
 Piotrek:
 [X] 5 App should allow user to stop traffic for all bearers at once but it requires bearer ID
 [X] 6 App should use kbps as default unit for stats but it uses bps:
+
+Michał Antosieiwicz:
+[x] 7 App should return HTTP 404 for non-existent bearer statistics but incorrectly returns 200 OK with zeroed data.

@@ -11,6 +11,7 @@ ${DEFAULT_BEARER_ID}          9
 ${STATUS_OK}                  200
 ${STATUS_VALIDATION_ERROR}    422
 ${STATUS_BAD_REQUEST}         400
+${STATUS_NOT_FOUND}           404
 
 *** Keywords ***
 #test section 1
@@ -87,3 +88,18 @@ Stop All Traffic On UE ${ue_id} and expect success ${expected_status}
     [Documentation]    Tries to stop all traffic for UE without specifying bearer_id
     ${answer}=    Stop All Traffic    ${ue_id}
     Should Be Equal As Integers    ${answer['status']}    ${expected_status}    msg=App should allow stopping traffic for all bearers but endpoint failed!
+
+Get Traffic Statistics For Bearer
+    [Arguments]    ${ue_id}    ${bearer_id}
+    ${response}=    Get Traffic Stats    ${{int($ue_id)}}    ${{int($bearer_id)}}
+    RETURN   ${response}
+
+Verify Resource Is Not Accessible
+    [Arguments]    ${ue_id}
+    ${response}=    Get Ue    ${{int($ue_id)}}
+    Should Not Be Equal As Integers    ${response['status']}    200
+
+Attach UE context
+    [Arguments]    ${ue_id}    ${expected_status}
+    ${answer}=    Attach Ue    ${{int($ue_id)}}
+    Should Be Equal As Integers    ${answer['status']}    ${expected_status}
