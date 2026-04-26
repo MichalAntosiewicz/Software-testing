@@ -36,7 +36,7 @@ TC-22 User Should Not Be Able To Start Traffic Out Of Lower Allowed Speed Range
     Attach UE with ID 1 and expect success status ${STATUS_OK}   
     Start Traffic on UE 1 Bearer 9 with -100 Mbps and expect error ${STATUS_BAD_REQUEST}    
 
-TC-23 User Should Be Able To Restart Traffic On Restarted Bearer
+TC-23 User Should Be Able To Restart Traffic On Restarted UE
     [Tags]    TC-23    Section-5    Positive
     [Documentation]    Check whether system correctly allow user to attach UE, add bearer, start traffic 
     ...                then detach same UE and then add same ID bearer and start traffic \n\n
