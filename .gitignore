@@ -1,0 +1,18 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Bazy danych
+*.db
+*.sqlite3
+
+# Środowiska wirtualne
+venv/
+.env
+.conda/
+
+# IDE
+.vscode/
+.idea/
