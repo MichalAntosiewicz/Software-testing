@@ -1,0 +1,10 @@
+Err 1
+    Komponent: epc/models.py (Klasa UEState)
+    Typ: Naruszenie integralności danych (Brak spójności agregatu)
+
+    Opis:
+    Brak walidacji typu "after" w modelu UEState. Pydantic pozwala na utworzenie obiektu, w którym słownik `stats` zawiera rekordy ThroughputStats dla identyfikatorów połączeń (np. bearer_id=2),
+    które nie istnieją w słowniku `bearers` (nie zostały załączone dla danego urządzenia).
+
+    Konsekwencje:
+    Możliwość powstawania "osieroconych statystyk" w pamięci RAM i bazie SQLite. System dopuszcza nielogiczny stan sieciowy, w którym mierzy ruch dla nieistniejących kanałów transmisyjnych.
