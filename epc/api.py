@@ -102,6 +102,17 @@ def get_ue(ue_id: int, repo: Annotated[EPCRepository, Depends(get_repo)]):
 @router.delete("/ues/{ue_id}", response_model=DetachResponse)
 def detach_ue(ue_id: int, repo: Annotated[EPCRepository, Depends(get_repo)]):
     try:
+
+        # Necessary to correctly delete UE with running traffic
+        #Get stats
+        #state = repo.get_ue(ue_id)
+        #tm = get_traffic_manager(repo)
+
+        #Stop transfer
+        #for bearer_id in list(state.bearers.keys()):
+        #    if tm.is_running(ue_id, bearer_id):
+        #        tm.stop(ue_id, bearer_id)
+
         repo.detach_ue(ue_id)
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
@@ -205,7 +216,7 @@ def stop_traffic(
     if not bearer:
         raise HTTPException(status_code=400, detail="Bearer not found")
     tm = get_traffic_manager(repo)
-    tm.stop(ue_id, bearer_id)
+    tm.stop(ue_id, bearer_id)    #Transfer is stopped when deleting bearer but not when deleting UE
     bearer.active = False
     repo.update_bearer(ue_id, bearer)
     return TrafficStopResponse(status="traffic_stopped", ue_id=ue_id, bearer_id=bearer_id)
