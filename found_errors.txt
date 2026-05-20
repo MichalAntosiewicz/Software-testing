@@ -8,3 +8,15 @@ Err 1
 
     Konsekwencje:
     Możliwość powstawania "osieroconych statystyk" w pamięci RAM i bazie SQLite. System dopuszcza nielogiczny stan sieciowy, w którym mierzy ruch dla nieistniejących kanałów transmisyjnych.
+
+
+Err 2
+    Komponent: epc/api.py (detach ue)
+    Typ: Brak obsługi zwalniania aktywnych transferów danego UE przy jego zwalnianiu
+
+    Opis:
+    Przy zwalnianiu UE z rozpoczętym transferem, dane transferu nie są usuwane co przy ponownym dodaniu
+    tego samego UE i próby rozpoczęcia transferu na tym samym bearerze co poprzednio nie jest możliwe
+
+    Konsekwencje:
+    Zostawienie w pamięci aplikacji danych o działającym transferze mimo usunięcia UE z nim związanego

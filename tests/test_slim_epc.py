@@ -1,17 +1,15 @@
+import time
 from urllib import response
 
 import pytest
-<<<<<<< HEAD
 from pydantic import ValidationError
 from epc.models import StartTrafficRequest, UEState, BearerConfig, AttachUERequest
 
-=======
 from fastapi.testclient import TestClient
 from main import app
 from epc.api import get_repo
 import httpx
 client = TestClient(app)
->>>>>>> 358c3d07c6546344b1d37494a629f100ace0235e
 
 # 1. TEST KLAS RÓWNOWAŻNOŚCI: Walidacja jednostek przepustowości
 def test_traffic_request_exactly_one_throughput_enforced():
@@ -123,8 +121,7 @@ def test_developer_ue_state_bearer_and_stats_consistency_bug():
     attached_bearers = {
         9: BearerConfig(bearer_id=9, protocol="tcp", target_bps=100000, active=True)
     }
-    
-<<<<<<< HEAD
+
     # Inicjalizacja struktur statystyk zawierająca rekord dla niezałączonego bearera o ID 2
     corrupted_stats = {
         9: ThroughputStats(bearer_id=9, ue_id=1, bytes_tx=500, bytes_rx=500),
@@ -139,7 +136,6 @@ def test_developer_ue_state_bearer_and_stats_consistency_bug():
             bearers=attached_bearers,
             stats=corrupted_stats
         )
-=======
     time.sleep(1.1)
     
     stats_resp = client.get("/ues/1/bearers/1/traffic")
@@ -312,4 +308,3 @@ def test_start_traffic_with_number_of_throughputs():
         assert first_error["type"] == "value_error"
         assert first_error["msg"] == "Value error, Provide exactly one throughput value (Mbps, kbps, or bps)"
         # Validation in models.py - StartTrafficRequest
->>>>>>> 358c3d07c6546344b1d37494a629f100ace0235e
